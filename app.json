@@ -29,7 +29,6 @@
         "android.permission.ACTIVITY_RECOGNITION",
         "android.permission.BODY_SENSORS"
       ],
-      "googleServicesFile": "./google-services.json",
       "package": "com.nimash79.Step"
     },
     "web": {
