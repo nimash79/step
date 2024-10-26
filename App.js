@@ -108,10 +108,10 @@ export default function App() {
     iransans_num_bold: require("./assets/fonts/iransans/IRANSansDN_FaNum-Bold.ttf"),
   });
 
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(undefined);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  // const [expoPushToken, setExpoPushToken] = useState("");
+  // const [notification, setNotification] = useState(undefined);
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
 
   // useEffect(() => {
   //   registerForPushNotificationsAsync()

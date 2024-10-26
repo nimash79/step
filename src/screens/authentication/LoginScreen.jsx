@@ -21,7 +21,7 @@ import { loginUser } from "../../utils/authentication";
 import CustomPasswordInput from "../../components/Shared/CustomPasswordInput";
 import { errorAlert } from "../../utils/alert";
 import LoadingModal from "../../components/modals/LoadingModal";
-import { addToken, removeToken } from "../../utils/data_storage";
+import { addRefreshToken, addToken, removeToken } from "../../utils/data_storage";
 import { getUserInfo, login } from "../../services/accountService";
 import { addUser, removeUser } from "../../redux/reducers/userReducer";
 import ErrorAlert from "./../../components/alerts/ErrorAlert";
@@ -58,6 +58,7 @@ const LoginScreen = ({ navigation }) => {
         password,
       });
       await addToken(loginRes.data.access);
+      await addRefreshToken(loginRes.data.refresh);
       const { data } = await getUserInfo();
       console.log(data);
       if (data.status !== 200) throw new Error("login failed from server!");

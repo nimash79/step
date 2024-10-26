@@ -19,7 +19,7 @@ import { errorAlert } from "../../utils/alert";
 import CustomPasswordInput from "../../components/Shared/CustomPasswordInput";
 import LoadingModal from "../../components/modals/LoadingModal";
 import ErrorAlert from "../../components/alerts/ErrorAlert";
-import { addToken } from "../../utils/data_storage";
+import { addRefreshToken, addToken } from "../../utils/data_storage";
 import { useDispatch } from "react-redux";
 import { addUser, removeUser } from "../../redux/reducers/userReducer";
 
@@ -85,6 +85,7 @@ const RegisterScreen = ({ navigation }) => {
       });
       console.log(response.data);
       await addToken(response.data.access);
+      await addRefreshToken(response.data.refresh);
       dispatch(removeUser());
       const userRes = await getUserInfo();
       dispatch(addUser(userRes.data.data));

@@ -15,8 +15,11 @@ export const login = (model) => {
   );
 };
 
-export const logout = () => {
-  return http.post(`${config.url}/api/v1/accounts/logout/`);
+export const logout = (model) => {
+  return http.post(
+    `${config.url}/api/v1/accounts/logout/`,
+    JSON.stringify(model)
+  );
 };
 
 export const getUserInfo = () => {

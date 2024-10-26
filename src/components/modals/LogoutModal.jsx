@@ -10,20 +10,29 @@ import { useDispatch } from "react-redux";
 import CustomText from "../../components/Shared/CustomText";
 import { COLORS } from "../../utils/constants";
 import { CommonActions } from "@react-navigation/native";
-import { removeToken } from "../../utils/data_storage";
+import { getRefreshToken, removeRefreshToken, removeToken } from "../../utils/data_storage";
 import { removeUser } from "../../redux/reducers/userReducer";
+import { logout } from "../../services/accountService";
 
 const LogoutModal = ({ navigation, visible, setVisible }) => {
   const dispatch = useDispatch();
   const submit = async () => {
-    await removeToken();
-    dispatch(removeUser());
-    setVisible(false);
-    const action = CommonActions.reset({
-      index: 0,
-      routes: [{ name: "Authentication" }],
-    });
-    navigation.dispatch(action);
+    try {
+      const refresh = await getRefreshToken();
+      const res = await logout({refresh});
+      console.log(res.data);
+      await removeToken();
+      await removeRefreshToken();
+      dispatch(removeUser());
+      setVisible(false);
+      const action = CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Authentication" }],
+      });
+      navigation.dispatch(action);
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
@@ -34,7 +43,9 @@ const LogoutModal = ({ navigation, visible, setVisible }) => {
       >
         <View style={styles.modalView}>
           <View style={styles.header}>
-            <CustomText style={[styles.title, {color: COLORS.error}]}>خروج از حساب کاربری</CustomText>
+            <CustomText style={[styles.title, { color: COLORS.error }]}>
+              خروج از حساب کاربری
+            </CustomText>
           </View>
           <View style={styles.body}>
             <CustomText style={styles.description}>

@@ -80,7 +80,6 @@ const IntroScreen = ({ navigation }) => {
           <CustomButton
             text={"شروع کنیم!"}
             onClick={() => navigation.replace("Authentication")}
-            // onClick={sendPushNotification}
             style={styles.startButton}
           />
         </View>
