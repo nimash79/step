@@ -25,9 +25,9 @@
         }
       },
       "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.ACTIVITY_RECOGNITION",
-        "android.permission.BODY_SENSORS"
+        "RECORD_AUDIO",
+        "ACTIVITY_RECOGNITION",
+        "BODY_SENSORS"
       ],
       "package": "com.nimash79.Step"
     },
@@ -40,6 +40,8 @@
       "expo-image-picker"
     ],
     "extra": {
+      "supportsRTL": true,
+      "forcesRTL": true,
       "eas": {
         "projectId": "3be8e5c4-32a3-456d-9f8f-e3cfeadee610"
       }
