@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  PermissionsAndroid,
 } from "react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -105,9 +106,12 @@ const StepScreen = ({ navigation }) => {
         const granted = await getLocationPermission();
         if (granted) {
           const isLocationOn = await Location.hasServicesEnabledAsync();
-          const isActivityOn = await Pedometer.isAvailableAsync();
+          const isActivityOn = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+          );
           if (!isLocationOn) setLocationModal(true);
-          else if (!isActivityOn) setActivityModal(true);
+          else if (isActivityOn !== PermissionsAndroid.RESULTS.GRANTED)
+            setActivityModal(true);
           else {
             await updateRegion();
             setMyRegion((r) => {
@@ -327,14 +331,22 @@ const StepScreen = ({ navigation }) => {
       setPaths([r]);
       return r;
     });
-    const activityPermission = await Pedometer.getPermissionsAsync();
-    if (!activityPermission.granted) setActivityModal(true);
+    const activityPermission = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+    );
+    if (activityPermission !== PermissionsAndroid.RESULTS.GRANTED)
+      setActivityModal(true);
   };
   const activityModalSubmit = async () => {
     try {
-      const permission = await Pedometer.isAvailableAsync();
+      const permission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+      );
+      console.log(permission);
+      // const permission = await Pedometer.isAvailableAsync();
       setActivityModal(false);
-      if (!permission) navigation.navigate("Summary");
+      if (permission !== PermissionsAndroid.RESULTS.GRANTED)
+        navigation.navigate("Summary");
     } catch (err) {
       console.log(err);
     }
@@ -468,8 +480,8 @@ const StepScreen = ({ navigation }) => {
               </CustomText>
             ) : (
               <CustomText style={styles.headerSubtitle}>
-                {user.purposeSteps - steps} قدم از قدم های مورد هدف امروز شما
-                باقی مانده است.
+                {e2p(user.purposeSteps - steps)} قدم از قدم های مورد هدف امروز
+                شما باقی مانده است.
               </CustomText>
             )}
           </View>
@@ -523,7 +535,7 @@ const StepScreen = ({ navigation }) => {
             <View style={styles.item}>
               <FireIcon />
               <CustomText style={styles.itemValue} fontStyle="semibold">
-                {calory}
+                {e2p(calory)}
               </CustomText>
               <CustomText style={styles.itemName}>کالری</CustomText>
             </View>

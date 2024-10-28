@@ -1,4 +1,4 @@
-import { StyleSheet, View, Linking } from "react-native";
+import { StyleSheet, View, PermissionsAndroid } from "react-native";
 import { useCallback, useState, useEffect } from "react";
 import * as Location from "expo-location";
 import { Pedometer } from "expo-sensors";
@@ -73,9 +73,12 @@ const Activities = ({ navigation, setDailyInfo }) => {
         const granted = await getLocationPermission();
         if (granted) {
           const isLocationOn = await Location.hasServicesEnabledAsync();
-          const isActivityOn = await Pedometer.isAvailableAsync();
+          const isActivityOn = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+          );
           if (!isLocationOn) setLocationModal(true);
-          else if (!isActivityOn) setActivityModal(true);
+          else if (isActivityOn !== PermissionsAndroid.RESULTS.GRANTED)
+            setActivityModal(true);
           else {
             setCounterActive(true);
             startRunning();
@@ -164,8 +167,11 @@ const Activities = ({ navigation, setDailyInfo }) => {
   const locationModalSubmit = async () => {
     const isLocationOn = await Location.hasServicesEnabledAsync();
     if (isLocationOn) {
-      const activityPermission = await Pedometer.isAvailableAsync();
-      if (!activityPermission) setActivityModal(true);
+      const activityPermission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+      );
+      if (activityPermission !== PermissionsAndroid.RESULTS.GRANTED)
+        setActivityModal(true);
       else {
         setRunning(true);
         setCounterActive(true);
@@ -178,8 +184,10 @@ const Activities = ({ navigation, setDailyInfo }) => {
     setLocationModal(false);
   };
   const activityModalSubmit = async () => {
-    const permission = await Pedometer.isAvailableAsync();
-    if (permission) {
+    const permission = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+    );
+    if (permission === PermissionsAndroid.RESULTS.GRANTED) {
       setActivityModal(false);
       setCounterActive(true);
     } else console.log("pedometer is not available");

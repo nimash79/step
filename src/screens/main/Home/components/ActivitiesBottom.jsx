@@ -25,7 +25,7 @@ const ActivitiesBottom = ({
       <View style={styles.item}>
         <FireIcon />
         <CustomText style={styles.itemValue} fontStyle="semibold">
-          {calory}
+          {e2p(calory)}
         </CustomText>
         <CustomText style={styles.itemName}>کالری</CustomText>
       </View>

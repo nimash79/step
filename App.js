@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { I18nManager, Platform } from "react-native";
+import { I18nManager } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,9 +8,8 @@ import "react-native-reanimated";
 import "react-native-gesture-handler";
 import * as Splash from "expo-splash-screen";
 import { Provider } from "react-redux";
-import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
+import RNRestart from "react-native-restart";
 
 import store from "./src/redux/store";
 import { toastConfig } from "./src/utils/alert";
@@ -46,58 +45,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-
-
-function handleRegistrationError(errorMessage) {
-  throw new Error(errorMessage);
-}
-
-async function registerForPushNotificationsAsync() {
-  if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("default", {
-      name: "default",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
-    });
-  }
-
-  if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== "granted") {
-      handleRegistrationError(
-        "Permission not granted to get push token for push notification!"
-      );
-      return;
-    }
-    // const projectId =
-    //   Constants?.expoConfig?.extra?.eas?.projectId ??
-    //   Constants?.easConfig?.projectId;
-    // if (!projectId) {
-    //   handleRegistrationError("Project ID not found");
-    // }
-    // try {
-    //   const pushTokenString = (
-    //     await Notifications.getExpoPushTokenAsync({
-    //       projectId,
-    //     })
-    //   ).data;
-    //   console.log(pushTokenString);
-    //   return pushTokenString;
-    // } catch (e) {
-    //   handleRegistrationError(`getExpoPushToken: ${e}`);
-    // }
-  } else {
-    handleRegistrationError("Must use physical device for push notifications");
-  }
-}
-
 export default function App() {
   const [appIsReady, setAppIsReady] = useState();
   const [loaded] = useFonts({
@@ -108,42 +55,13 @@ export default function App() {
     iransans_num_bold: require("./assets/fonts/iransans/IRANSansDN_FaNum-Bold.ttf"),
   });
 
-  // const [expoPushToken, setExpoPushToken] = useState("");
-  // const [notification, setNotification] = useState(undefined);
-  // const notificationListener = useRef();
-  // const responseListener = useRef();
-
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync()
-  //     .then((token) => setExpoPushToken(token ?? ""))
-  //     .catch((error) => setExpoPushToken(`${error}`));
-
-  //   notificationListener.current =
-  //     Notifications.addNotificationReceivedListener((notification) => {
-  //       setNotification(notification);
-  //     });
-
-  //   responseListener.current =
-  //     Notifications.addNotificationResponseReceivedListener((response) => {
-  //       console.log(response);
-  //     });
-
-  //   return () => {
-  //     notificationListener.current &&
-  //       Notifications.removeNotificationSubscription(
-  //         notificationListener.current
-  //       );
-  //     responseListener.current &&
-  //       Notifications.removeNotificationSubscription(responseListener.current);
-  //   };
-  // }, []);
-
   useEffect(() => {
+    console.log(I18nManager.isRTL);
     (async () => {
       if (loaded) {
         await Splash.hideAsync();
         setTimeout(() => setAppIsReady(true), 3000);
-      }
+      } else if (!I18nManager.isRTL) RNRestart.restart();
     })();
   }, [loaded]);
   if (!loaded) return null;
