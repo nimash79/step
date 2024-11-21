@@ -9,7 +9,7 @@ import "react-native-gesture-handler";
 import * as Splash from "expo-splash-screen";
 import { Provider } from "react-redux";
 import * as Notifications from "expo-notifications";
-import RNRestart from "react-native-restart";
+import * as Updates from "expo-updates";
 
 import store from "./src/redux/store";
 import { toastConfig } from "./src/utils/alert";
@@ -56,12 +56,17 @@ export default function App() {
   });
 
   useEffect(() => {
-    console.log(I18nManager.isRTL);
+    (async () => {
+      if (!I18nManager.isRTL) await Updates.reloadAsync();
+    })();
+  }, []);
+
+  useEffect(() => {
     (async () => {
       if (loaded) {
         await Splash.hideAsync();
         setTimeout(() => setAppIsReady(true), 3000);
-      } else if (!I18nManager.isRTL) RNRestart.restart();
+      }
     })();
   }, [loaded]);
   if (!loaded) return null;

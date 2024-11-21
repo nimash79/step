@@ -24,11 +24,7 @@
           "apiKey": "AIzaSyB2vBkKP7ia8Ri5EHA3SoC4ujr7-gB7M7I"
         }
       },
-      "permissions": [
-        "RECORD_AUDIO",
-        "ACTIVITY_RECOGNITION",
-        "BODY_SENSORS"
-      ],
+      "permissions": ["RECORD_AUDIO", "ACTIVITY_RECOGNITION", "BODY_SENSORS"],
       "package": "com.nimash79.Step"
     },
     "web": {
@@ -37,11 +33,17 @@
     "plugins": [
       "expo-font",
       "expo-localization",
-      "expo-image-picker"
+      "expo-image-picker",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 26
+          }
+        }
+      ]
     ],
     "extra": {
-      "supportsRTL": true,
-      "forcesRTL": true,
       "eas": {
         "projectId": "3be8e5c4-32a3-456d-9f8f-e3cfeadee610"
       }
